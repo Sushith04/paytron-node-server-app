@@ -43,11 +43,31 @@ const UsersController = (app) => {
             res.sendStatus(403)
         }
     }
+    
+    const pendingDonors = async (req, res) => {
+        const pendingDonors = await userDao.findPendingDonors();
+        res.json(pendingDonors)
+    }
+
+    const pendingNGOs = async (req, res) => {
+        const pendingNGOs = await userDao.findPendingNGOs();
+        res.json(pendingNGOs)
+    }
+
+    const approveUser = async (req, res) => {
+        const userToUpdate = req.params.uid;
+        const user = await userDao.findUserByUserId(userToUpdate);
+        const status = await userDao.updateUserApproval(userToUpdate);
+        res.json(user)
+    }
 
     app.post('/register', register)
     app.post('/login', login)
     app.post('/logout', logout)
     app.post('/profile', profile)
+    app.get('/pendingDonors', pendingDonors)
+    app.get('/pendingNGOs', pendingNGOs)
+    app.post('/updateUser/:uid', approveUser);
 }
 
 export default UsersController
