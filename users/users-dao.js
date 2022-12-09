@@ -16,7 +16,10 @@ export const findPendingNGOs = async () =>
     await usersModel.find({role: "NGO", approvalStatus: "PENDING"})
 
 export const updateUserApproval = async (uid) =>
-    await usersModel.updateOne({_id: uid}, {$set: {"approvalStatus":"APPROVED"}})
+    await usersModel.updateOne({_id: uid}, {$set: {"approvalStatus": "APPROVED"}})
 
 export const findUserByUserId = async (id) =>
     await usersModel.findOne({_id: id})
+
+export const updateProfileDao = async (uid, profile) =>
+    await usersModel.updateOne({_id: uid}, {$set: profile})

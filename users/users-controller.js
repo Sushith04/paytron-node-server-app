@@ -1,16 +1,12 @@
 import * as userDao from './users-dao.js'
 
-let currentUser = null
-
 const UsersController = (app) => {
 
     const register = async (req, res) => {
         const user = req.body;
-        console.log("In Register")
         const existingUser = await userDao
             .findUserByUsername(user.username)
-        if(existingUser) {
-            console.log("User exists")
+        if (existingUser) {
             res.sendStatus(403)
             return
         }
@@ -23,7 +19,7 @@ const UsersController = (app) => {
         const existingUser = await userDao
             .findUserByCredentials(
                 credentials.username, credentials.password)
-        if(existingUser) {
+        if (existingUser) {
             req.session['currentUser'] = existingUser
             res.json(existingUser)
             return
@@ -43,7 +39,7 @@ const UsersController = (app) => {
             res.sendStatus(403)
         }
     }
-    
+
     const pendingDonors = async (req, res) => {
         const pendingDonors = await userDao.findPendingDonors();
         res.json(pendingDonors)
@@ -61,6 +57,15 @@ const UsersController = (app) => {
         res.json(user)
     }
 
+    const updateProfile = async (req, res) => {
+        const profileId = req.params.uid;
+        const updates = req.body;
+        const profile = await userDao.updateProfileDao(profileId, updates)
+        const finalProfile = await userDao.findUserByUserId(profileId)
+        req.session['currentUser'] = finalProfile
+        res.json(finalProfile)
+    }
+
     app.post('/register', register)
     app.post('/login', login)
     app.post('/logout', logout)
@@ -68,6 +73,7 @@ const UsersController = (app) => {
     app.get('/pendingDonors', pendingDonors)
     app.get('/pendingNGOs', pendingNGOs)
     app.post('/updateUser/:uid', approveUser);
+    app.put('/updateProfile/:uid', updateProfile);
 }
 
 export default UsersController
