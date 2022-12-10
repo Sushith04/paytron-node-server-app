@@ -5,7 +5,7 @@ const requestsSchema = mongoose.Schema({
                                            userName: String,
                                            time: Number,
                                            title: String,
-                                           image: {type: String, default: ""},
+                                           donation: {type: Number, default: 0},
                                            likes: {type: Number, default: 0},
                                            interested: {type: Boolean, default: false},
                                            interests: {type: Number, default: 0},
