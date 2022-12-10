@@ -23,3 +23,6 @@ export const findUserByUserId = async (id) =>
 
 export const updateProfileDao = async (uid, profile) =>
     await usersModel.updateOne({_id: uid}, {$set: profile})
+
+export const findUsersByUsername = async (username) =>
+await usersModel.find({username:{$regex:"(.*?)"+username,$options:"$i"}})
