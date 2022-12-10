@@ -1,4 +1,5 @@
 import * as userDao from './users-dao.js'
+import * as requestDao from '../requests/requests-dao.js'
 
 const UsersController = (app) => {
 
@@ -68,11 +69,22 @@ const UsersController = (app) => {
 
     const getUsers = async (req, res) => {
         const userName = req.params.username;
-        console.log(userName)
         const users = await userDao.findUsersByUsername(userName)
-        console.log(users);
         res.json(users)
     }
+
+    const getUserInterests = async (req, res) => {
+        const userId = req.params.uid;
+        const user = await userDao.findUserByUserId(userId)
+        let interestedRequests = [];
+        for(const reqid of user.interestedRequests) {
+            const request = await requestDao.findRequestByRequestId(reqid);
+            interestedRequests.push(request)
+        }
+        res.json(interestedRequests)
+    }
+
+
 
     app.post('/register', register)
     app.post('/login', login)
@@ -83,6 +95,7 @@ const UsersController = (app) => {
     app.post('/updateUser/:uid', approveUser);
     app.put('/updateProfile/:uid', updateProfile);
     app.get('/getUsers/:username', getUsers);
+    app.get('/getUserInterests/:uid', getUserInterests);
 }
 
 export default UsersController
