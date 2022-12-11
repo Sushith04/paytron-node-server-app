@@ -15,6 +15,7 @@ const usersSchema = mongoose.Schema({
                                         donorSalary: {type: Number, default: 0},
                                         donorMaxDon: {type: Number, default: 0},
                                         interestedRequests: {type: Array, default: []},
+                                        createdRequests: {type: Array, default: []},
                                         approvalStatus: {
                                             type: String, enum: ['PENDING', 'APPROVED'],
                                             default: 'PENDING'

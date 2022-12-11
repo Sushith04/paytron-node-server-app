@@ -83,8 +83,24 @@ const UsersController = (app) => {
         }
         res.json(interestedRequests)
     }
-
-
+    
+    const getNGOInterestedDonors = async (req, res) => {
+        const userId = req.params.uid;
+        const ngoUser = await userDao.findUserByUserId(userId)
+        let NGOInterestedDonors = [];
+        let NGOInterestedDonorsIds = [];
+        for(const reqid of ngoUser.createdRequests) {
+            const request = await requestDao.findRequestByRequestId(reqid);
+            for(const userid of request.interestedDonors) {
+                const user = await userDao.findUserByUserId(userid);
+                if (NGOInterestedDonorsIds.includes(user.username)===false) {
+                    NGOInterestedDonorsIds.push(user.username)
+                    NGOInterestedDonors.push(user)
+                }
+            }
+        }
+        res.json(NGOInterestedDonors)
+    }
 
     app.post('/register', register)
     app.post('/login', login)
@@ -96,6 +112,7 @@ const UsersController = (app) => {
     app.put('/updateProfile/:uid', updateProfile);
     app.get('/getUsers/:username', getUsers);
     app.get('/getUserInterests/:uid', getUserInterests);
+    app.get('/getNGOInterestedDonors/:uid', getNGOInterestedDonors)
 }
 
 export default UsersController

@@ -4,7 +4,11 @@ const RequestsController = (app) => {
 
     const createRequest = async (req, res) => {
         const request = req.body;
+        const uid = req.params.uid;
+        const user = await userDao.findUserByUserId(uid);
         const createdRequest = await requestDao.createRequest(request)
+        user.createdRequests.push(createdRequest._id)
+        const updateUserstatus = await userDao.updateProfileDao(uid, user);
         res.json(createdRequest);
     }
 
@@ -72,10 +76,22 @@ const RequestsController = (app) => {
         res.json(updatedrequest)
     }
 
-    app.post('/request', createRequest)
+    const getInterestedDonorsOfRequest = async (req, res) => {
+        const requestId = req.params.rid;
+        const request = await requestDao.findRequestByRequestId(requestId);
+        let interestedDonorsOfRequest = [];
+        for(const userid of request.interestedDonors) {
+            const user = await userDao.findUserByUserId(userid);
+            interestedDonorsOfRequest.push(user)
+        }
+        res.json(interestedDonorsOfRequest)
+    }
+
+    app.post('/request/:uid', createRequest)
     app.get('/requests', findAllRequests)
     app.put('/updateRequestLikes/:rid/:uid', updateRequestLikes);
     app.put('/updateRequestInterests/:rid/:uid', updateRequestInterests);
+    app.get('/getInterestedDonorsOfRequest/:rid', getInterestedDonorsOfRequest)
 }
 
 export default RequestsController
