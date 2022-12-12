@@ -26,3 +26,6 @@ export const updateProfileDao = async (uid, profile) =>
 
 export const findUsersByUsername = async (username) =>
 await usersModel.find({username:{$regex:"(.*?)"+username,$options:"$i"}})
+
+export const findAllUsers = async () =>
+    await usersModel.find()

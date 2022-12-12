@@ -87,11 +87,31 @@ const RequestsController = (app) => {
         res.json(interestedDonorsOfRequest)
     }
 
+    const deleteRequest = async (req, res) => {
+        const requestId = req.params.rid;
+        const request = await requestDao.findRequestByRequestId(requestId);
+        const users = await userDao.findAllUsers();
+        for (const user of users) {
+             if (user.username === request.userName) {
+                 const index = user.createdRequests.indexOf(requestId);
+                 user.createdRequests.splice(index, 1);
+             }
+             if ( user.interestedRequests.includes(requestId)) {
+                 const index = user.interestedRequests.indexOf(requestId);
+                 user.interestedRequests.splice(index, 1);
+             }
+            const userUpdatestatus = await userDao.updateProfileDao(user._id, user)
+            const requestUpdatestatus = await requestDao.deleteRequestDao(requestId)
+        }
+        res.json(request)
+    }
+
     app.post('/request/:uid', createRequest)
     app.get('/requests', findAllRequests)
     app.put('/updateRequestLikes/:rid/:uid', updateRequestLikes);
     app.put('/updateRequestInterests/:rid/:uid', updateRequestInterests);
     app.get('/getInterestedDonorsOfRequest/:rid', getInterestedDonorsOfRequest)
+    app.delete('/deleteRequest/:rid', deleteRequest)
 }
 
 export default RequestsController

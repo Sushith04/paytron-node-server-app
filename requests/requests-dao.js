@@ -11,3 +11,6 @@ export const findRequestByRequestId = async (id) =>
 
 export const updateRequestDao = async (uid, request) =>
     await requestsModel.updateOne({_id: uid}, {$set: request})
+
+export const deleteRequestDao = async (rid) => 
+     await requestsModel.deleteOne({_id: rid})
