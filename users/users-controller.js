@@ -67,6 +67,18 @@ const UsersController = (app) => {
         res.json(finalProfile)
     }
 
+    const getUser = async (req, res) => {
+        const userName = req.params.username;
+        const user = await userDao.findUserByUsername(userName)
+        res.json(user)
+    }
+
+    const getProfileUser = async (req, res) => {
+        const userName = req.params.username;
+        const user = await userDao.findUserByUsername(userName)
+        res.json(user)
+    }
+
     const getUsers = async (req, res) => {
         const userName = req.params.username;
         const users = await userDao.findUsersByUsername(userName)
@@ -83,7 +95,7 @@ const UsersController = (app) => {
         }
         res.json(interestedRequests)
     }
-    
+
     const getNGOInterestedDonors = async (req, res) => {
         const userId = req.params.uid;
         const ngoUser = await userDao.findUserByUserId(userId)
@@ -102,14 +114,16 @@ const UsersController = (app) => {
         res.json(NGOInterestedDonors)
     }
 
-    app.post('/register', register)
-    app.post('/login', login)
-    app.post('/logout', logout)
-    app.post('/profile', profile)
-    app.get('/pendingDonors', pendingDonors)
-    app.get('/pendingNGOs', pendingNGOs)
+    app.post('/register', register);
+    app.post('/login', login);
+    app.post('/logout', logout);
+    app.post('/profile', profile);
+    app.get('/pendingDonors', pendingDonors);
+    app.get('/pendingNGOs', pendingNGOs);
     app.post('/updateUser/:uid', approveUser);
     app.put('/updateProfile/:uid', updateProfile);
+    app.get('/getUser/:username', getUser);
+    app.get('/getProfileUser/:username', getProfileUser);
     app.get('/getUsers/:username', getUsers);
     app.get('/getUserInterests/:uid', getUserInterests);
     app.get('/getNGOInterestedDonors/:uid', getNGOInterestedDonors)
